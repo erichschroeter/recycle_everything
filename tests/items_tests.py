@@ -1,23 +1,14 @@
 
 import unittest
 
-from recycle_everything.items import BreadSlice, Sandwich
+from recycle_everything.items import CardboardBox, Dimensions
 
 
-class TestBreadSlice(unittest.TestCase):
+class TestCardboardBox(unittest.TestCase):
 
-    def test_breaks_down_to_single_item(self):
-        item = BreadSlice()
-        pieces = item.breakdown_names()
-        self.assertEqual(len(pieces), 1)
-
-
-class TestSandwich(unittest.TestCase):
-
-    def test_breaks_down_to_multiple_item(self):
-        item = Sandwich()
-        pieces = item.breakdown_names()
-        self.assertEqual(len(pieces), 3)
+    def test_disassemble_materials(self):
+        item = CardboardBox(Dimensions(100, 100, 100))
+        self.assertEqual(len(item.materials()), 1)
 
 
 if __name__ == '__main__':

@@ -3,20 +3,20 @@ A game to simulate recycle everything down to create a sustainable society.
 # Building
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+python -m venv .env
+source .env/bin/activate
 pip install -r requirements.txt
 ```
 
 # Testing
 
 ```bash
-source .venv/bin/activate
+source .env/bin/activate
 pytest
 ```
 
 ## Individual test files
 ```bash
-source .venv/bin/activate
+source .env/bin/activate
 PYTHONPATH=. python3 tests/disassembly_tests.py
 ```

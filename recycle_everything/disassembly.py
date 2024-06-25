@@ -2,64 +2,45 @@
 from abc import ABC, abstractmethod
 import logging
 
-from recycle_everything.items import ItemFactory
+from recycle_everything import Area
+from recycle_everything.items import Assembly
 
 
 class DisassemblyError(Exception):
     pass
 
-class ItemTooSmallError(DisassemblyError):
+class AssemblyTooSmallError(DisassemblyError):
     def __init__(self, item):
         super(DisassemblyError, self).__init__()
         self.item = item
 
     def __str__(self) -> str:
-        return f'Item too small for disassembly: {self.item}'
+        return f'Assembly too small for disassembly: {self.item}'
 
-class ItemTooLargeError(DisassemblyError):
-    def __init__(self, item):
+class AssemblyTooLargeError(DisassemblyError):
+    def __init__(self, input_area: Area, item: Assembly):
         super(DisassemblyError, self).__init__()
+        self.input_area = input_area
         self.item = item
 
     def __str__(self) -> str:
-        return f'Item too large for disassembly: {self.item}'
+        return f'Assembly {self.item.name()} ({self.item.dimensions}) too large for disassembly input {self.input_area}'
 
 class Disassembler(ABC):
     @abstractmethod
-    def breakdown(self, item_name):
+    def disassemble(self, item_name):
         pass
 
-class SmallShredder(Disassembler):
-    def breakdown(self, item_name):
-        pass
+class Shredder(Disassembler):
+    def __init__(self, input_area: Area) -> None:
+        super().__init__()
+        self.input_area = input_area
 
-class MediumShredder(Disassembler):
-    def _within_size_range(self, cubic_millimeters):
-        return cubic_millimeters > 10 and cubic_millimeters <= 100
-
-    def breakdown(self, item_name):
-        factory = ItemFactory()
-        item = factory.create_item(item_name)
-        # if item and self._within_size_range(item.cubic_millimeters()):
-        if item:
-            return item.breakdown_names()
-        logging.warn(f'Failed to breakdown: {item_name}')
-
-class LargeShredder(Disassembler):
-    def minimum_cubic_millimeters(self):
-        return 300*300*300
-
-    def maximum_cubic_millimeters(self):
-        return 300*600*600
-
-    def breakdown(self, item_name):
-        factory = ItemFactory()
-        item = factory.create_item(item_name)
-        if item:
-            cmm = item.cubic_millimeters()
-            if cmm < self.minimum_cubic_millimeters():
-                raise ItemTooSmallError(item=item)
-            if cmm > self.maximum_cubic_millimeters():
-                raise ItemTooLargeError(item=item)
-            return item.breakdown_names()
-        logging.warn(f'Failed to breakdown: {item_name}')
+    def disassemble(self, item: Assembly):
+        d = item.dimensions
+        sorted_dimensions = sorted([d.width_mm, d.length_mm, d.height_mm])
+        print(sorted_dimensions)
+        # Assume as long as the item is smaller than the shredder's input dimensions, it can be shredded.
+        if sorted_dimensions[0] > self.input_area.width_mm and sorted_dimensions[1] > self.input_area.width_mm:
+            raise AssemblyTooLargeError(input_area=self.input_area, item=item)
+        return item.materials()

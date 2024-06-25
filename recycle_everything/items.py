@@ -4,104 +4,46 @@ import inspect
 import logging
 import sys
 
+from recycle_everything import Dimensions
+from recycle_everything.materials import Cardboard, Material
 
-class BreakdownTree:
-    """
-    The idea for this is for every Item to have its own unique breakdown into smaller Items.
-    """
-    pass
 
-class ItemFactory:
-    def create_item(self, item_name: str):
+class AssemblyFactory:
+    def create_item(self, item_name: str, dimension: Dimensions):
         """
         Attempts to find the class closest to the given item_name within this module and returns an instance of it.
         """
+        item_name = item_name.lower().replace(' ', '')
         for name, obj in inspect.getmembers(sys.modules[__name__]):
-            if name.lower() == item_name.lower() and issubclass(obj, Item):
+            if name.lower() == item_name.lower() and issubclass(obj, Assembly):
                 logging.debug(f'Creating item: {name}')
-                return obj()
-        logging.warn(f'Failed to create item: {item_name}')
+                return obj(dimensions=dimension)
+        logging.error(f'Assembly not supported: {item_name}')
 
-class Material(ABC):
-    @abstractmethod
-    def name(self):
-        pass
 
-class Item(ABC):
-    @abstractmethod
-    def name(self):
-        pass
+class Assembly(ABC):
+    def __init__(self, name: str, dimensions: Dimensions) -> None:
+        super().__init__()
+        self.name = name
+        self.dimensions = dimensions
 
     @abstractmethod
-    def breakdown_names(self):
+    def materials(self) -> list[Material]:
         pass
 
-    @abstractmethod
-    def cubic_millimeters(self) -> int:
-        pass
+class CardboardBox(Assembly):
+    def __init__(self, dimensions: Dimensions) -> None:
+        super().__init__('cardboard box', dimensions)
 
-class OrganicMaterial(Material):
-    def name(self):
-        return 'organic material'
+    def materials(self):
+        return [Cardboard]
 
-class BreadSlice(Item):
-    def name(self):
-        return 'bread slice'
-
-    def breakdown_names(self):
-        return [OrganicMaterial().name()]
-
-    def cubic_millimeters(self) -> int:
-        return 10*50*50
-
-class Meat(Item):
-    def name(self):
-        return 'meat'
-
-    def breakdown_names(self):
-        return [OrganicMaterial().name()]
-
-    def cubic_millimeters(self) -> int:
-        return 5*50*50
-
-class Vegetable(Item):
-    def name(self):
-        return 'vegetable'
-
-    def breakdown_names(self):
-        return [OrganicMaterial().name()]
-
-    def cubic_millimeters(self) -> int:
-        return 7*50*50
-
-class Sandwich(Item):
-    def name(self):
-        return 'sandwich'
-
-    def breakdown_names(self):
-        return [Meat().name(), Vegetable().name(), BreadSlice().name()]
-
-    def cubic_millimeters(self) -> int:
-        return BreadSlice().cubic_millimeters()*2 + Meat().cubic_millimeters() + Vegetable().cubic_millimeters()
-
-class Diaper(Item):
+class Diaper(Assembly):
     pass
 
-class Wood(Item):
-    pass
-
-class GlassJar(Item):
-    pass
-
-class PlasticBottle(Item):
-    pass
-
-class AluminumCan(Item):
-    pass
-
-class CircuitBoard(Item):
+class CircuitBoard(Assembly):
     pass
 
 if __name__ == '__main__':
-    factory = ItemFactory()
-    print(factory.create_item('sandwich'))
+    factory = AssemblyFactory()
+    print(factory.create_item('cardboard box'))

@@ -2,34 +2,29 @@
 import logging
 import unittest
 
-from recycle_everything.disassembly import ItemTooSmallError, LargeShredder, MediumShredder
-from recycle_everything.items import BreadSlice, Sandwich
+from recycle_everything import ONE_METER, Area, Dimensions
+from recycle_everything.disassembly import AssemblyTooSmallError, Shredder
+from recycle_everything.items import CardboardBox, AssemblyFactory
+from recycle_everything.materials import Cardboard
 
+ONE_CUBIC_METER = Dimensions(ONE_METER, ONE_METER, ONE_METER)
 
-class TestMediumShredder(unittest.TestCase):
+class TestShredder(unittest.TestCase):
 
-    def test_sandwich_breakdown(self):
-        disassembler = MediumShredder()
-        items = disassembler.breakdown('sandwich')
-        self.assertEqual(3, len(items))
+    def setUp(self):
+        self.item_factory = AssemblyFactory()
 
-
-class TestLargeShredder(unittest.TestCase):
-
-    def test_sandwich_too_small_to_breakdown(self):
-        disassembler = LargeShredder()
-        self.assertRaises(ItemTooSmallError, disassembler.breakdown, 'sandwich')
+    def test_disassemble_cardboard_box_outputs_cardboard_particles(self):
+        disassembler = Shredder(input_area=Area(ONE_METER, ONE_METER))
+        items = disassembler.disassemble(self.item_factory.create_item('cardboard box', ONE_CUBIC_METER))
+        self.assertEqual(items[0], Cardboard)
 
 
 if __name__ == '__main__':
-    logger = logging.getLogger()
-    # logger.setLevel(logging.DEBUG)
-    logging.basicConfig(level=logging.DEBUG)
-    # ch = logging.StreamHandler()
-    # ch.setLevel(logging.DEBUG)
-    # logger.addHandler(ch)
-    disassembler = MediumShredder()
-    items = disassembler.breakdown('sandwich')
+    disassembler = Shredder()
+    item = AssemblyFactory().create_item('cardboard box', Dimensions(5, 10, 7))
+    logging.warn(f'created: {item}')
+    items = disassembler.disassemble(item)
     print(items)
     # unittest.main()
 
