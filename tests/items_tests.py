@@ -1,7 +1,7 @@
 
 import unittest
 
-from recycle_everything.items import CardboardBox, Dimensions
+from recycle_everything.assembly import CardboardBox, Dimensions
 
 
 class TestCardboardBox(unittest.TestCase):

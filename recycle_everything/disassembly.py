@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import logging
 
 from recycle_everything import Area
-from recycle_everything.items import Assembly
+from recycle_everything.assembly import Assembly
 
 
 class DisassemblyError(Exception):

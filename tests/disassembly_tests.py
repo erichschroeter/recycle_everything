@@ -4,7 +4,7 @@ import unittest
 
 from recycle_everything import ONE_METER, Area, Dimensions
 from recycle_everything.disassembly import AssemblyTooSmallError, Shredder
-from recycle_everything.items import CardboardBox, AssemblyFactory
+from recycle_everything.assembly import CardboardBox, AssemblyFactory
 from recycle_everything.materials import Cardboard
 
 ONE_CUBIC_METER = Dimensions(ONE_METER, ONE_METER, ONE_METER)
