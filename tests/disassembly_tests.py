@@ -4,8 +4,8 @@ import unittest
 
 from recycle_everything import ONE_CENTIMETER, ONE_CUBIC_METER, ONE_METER, Area, Dimensions, _init_logger
 from recycle_everything.disassembly import Shredder
-from recycle_everything.objects import Composition, ObjectFactory
-from recycle_everything.materials import Cardboard, Glue
+from recycle_everything.objects import ObjectFactory
+from recycle_everything.materials import Cardboard, Composition, Glue
 
 
 class TestShredder(unittest.TestCase):

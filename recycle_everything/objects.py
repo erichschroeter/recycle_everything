@@ -1,24 +1,16 @@
 
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from abc import ABC
 import inspect
-import logging
 import re
 import sys
 
 from recycle_everything import Dimensions
-from recycle_everything.materials import Cardboard, Glue, Material
+from recycle_everything.materials import Cardboard, Composition, Glue, Material
 
 CAMEL_CASE_PATTERN = re.compile(r'(?<!^)(?=[A-Z])')
 
 def camel_case_to_lowercase_readable(name):
     return CAMEL_CASE_PATTERN.sub('_', name).lower().replace('_', ' ')
-
-
-@dataclass
-class Composition:
-   material: Material
-   percentage: float
 
 
 class ObjectFactory:

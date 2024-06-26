@@ -1,11 +1,19 @@
 
-from abc import ABC, abstractmethod
+from abc import ABC
+from dataclasses import dataclass
 
 
 class Material(ABC):
     def __init__(self, name: str) -> None:
         super().__init__()
         self.name = name
+
+
+@dataclass
+class Composition:
+   material: Material
+   percentage: float
+
 
 class Cardboard(Material):
     def __init__(self, name: str) -> None:

@@ -3,12 +3,12 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import logging
 
-from recycle_everything import Area, Dimensions
+from recycle_everything import Area, BaseRecycleEverythingError, Dimensions
 from recycle_everything.materials import Material
 from recycle_everything.objects import Object
 
 
-class DisassemblyError(Exception):
+class DisassemblyError(BaseRecycleEverythingError):
     pass
 
 class ObjectTooSmallError(DisassemblyError):

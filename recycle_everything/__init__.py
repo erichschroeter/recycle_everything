@@ -10,8 +10,17 @@ ONE_CUBIC_DECIMETER = ONE_DECIMETER ** 3
 ONE_CUBIC_METER = ONE_METER ** 3
 
 
+class BaseRecycleEverythingError(Exception):
+    pass
+
+class InvalidValue(BaseRecycleEverythingError):
+    pass
+
+
 class Area:
     def __init__(self, width_mm: int, length_mm: int):
+        if width_mm < 0 or length_mm < 0:
+            raise InvalidValue(f'Area dimensions must be positive. Received: {width_mm}, {length_mm}')
         self.width_mm = width_mm
         self.length_mm = length_mm
 
@@ -21,6 +30,8 @@ class Area:
 
 class Dimensions:
     def __init__(self, width_mm: int, length_mm: int, height_mm: int):
+        if width_mm < 0 or length_mm < 0 or height_mm < 0:
+            raise InvalidValue(f'Dimensions must be positive. Received: {width_mm}, {length_mm}, {height_mm}')
         self.width_mm = width_mm
         self.length_mm = length_mm
         self.height_mm = height_mm
