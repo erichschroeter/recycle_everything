@@ -28,6 +28,13 @@ class Dimensions:
     def __str__(self) -> str:
         return f'{self.width_mm}mm x {self.length_mm}mm x {self.height_mm}mm'
 
+    def volume(self) -> int:
+        return self.width_mm * self.length_mm * self.height_mm
+
+
+ONE_CUBIC_CENTIMETER = Dimensions(ONE_CENTIMETER, ONE_CENTIMETER, ONE_CENTIMETER)
+ONE_CUBIC_METER = Dimensions(ONE_METER, ONE_METER, ONE_METER)
+
 
 class ColorLogFormatter(logging.Formatter):
     '''

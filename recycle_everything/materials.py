@@ -3,30 +3,42 @@ from abc import ABC, abstractmethod
 
 
 class Material(ABC):
-    @abstractmethod
-    def name(self) -> str:
-        pass
-
-class OrganicMaterial(Material):
-    def name(self):
-        return 'organic material'
+    def __init__(self, name: str) -> None:
+        super().__init__()
+        self.name = name
 
 class Cardboard(Material):
-    def name(self):
-        return 'cardboard'
-
-class Wood(Material):
-    def name(self):
-        return 'wood'
+    def __init__(self, name: str) -> None:
+        super().__init__('cardboard')
 
 class Glass(Material):
-    def name(self):
-        return 'glass'
+    def __init__(self, name: str) -> None:
+        super().__init__('glass')
 
-class Plastic(Material):
-    def name(self):
-        return 'plastic'
+class Glue(Material):
+    def __init__(self, name: str) -> None:
+        super().__init__('glue')
 
 class Metal(Material):
-    def name(self):
-        return 'metal'
+    def __init__(self, name: str) -> None:
+        super().__init__('metal')
+
+class OrganicMaterial(Material):
+    def __init__(self, name: str) -> None:
+        super().__init__('organic material')
+
+class Paper(Material):
+    def __init__(self, name: str) -> None:
+        super().__init__('paper')
+
+class Plastic(Material):
+    def __init__(self, name: str) -> None:
+        super().__init__('plastic')
+
+class Rubber(Material):
+    def __init__(self, name: str) -> None:
+        super().__init__('rubber')
+
+class Wood(Material):
+    def __init__(self, name: str) -> None:
+        super().__init__('wood')

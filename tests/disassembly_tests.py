@@ -2,29 +2,35 @@
 import logging
 import unittest
 
-from recycle_everything import ONE_METER, Area, Dimensions
-from recycle_everything.disassembly import AssemblyTooSmallError, Shredder
-from recycle_everything.assembly import CardboardBox, AssemblyFactory
-from recycle_everything.materials import Cardboard
+from recycle_everything import ONE_CENTIMETER, ONE_CUBIC_METER, ONE_METER, Area, Dimensions, _init_logger
+from recycle_everything.disassembly import Shredder
+from recycle_everything.objects import Composition, ObjectFactory
+from recycle_everything.materials import Cardboard, Glue
 
-ONE_CUBIC_METER = Dimensions(ONE_METER, ONE_METER, ONE_METER)
 
 class TestShredder(unittest.TestCase):
 
     def setUp(self):
-        self.item_factory = AssemblyFactory()
+        self.item_factory = ObjectFactory()
 
-    def test_disassemble_cardboard_box_outputs_cardboard_particles(self):
-        disassembler = Shredder(input_area=Area(ONE_METER, ONE_METER))
-        items = disassembler.disassemble(self.item_factory.create_item('cardboard box', ONE_CUBIC_METER))
-        self.assertEqual(items[0], Cardboard)
+    def test_disassemble_90_10_cardboard_box(self):
+        disassembler = Shredder(input_area=Area(ONE_METER, ONE_METER),
+                                output_dimensions=Dimensions(ONE_CENTIMETER, ONE_CENTIMETER, ONE_CENTIMETER))
+        box = self.item_factory.create('cardboard box', ONE_CUBIC_METER, [Composition(Cardboard, 90.0), Composition(Glue, 10.0)])
+        output = sorted(disassembler.disassemble(box), key=lambda x: x.material.__qualname__)  # sort alphabetically
+        self.assertEqual(output[0].quantity, 900)  # 900 pieces of Cardboard
+        self.assertEqual(output[1].quantity, 100)  # 100 pieces of Glue (tape)
 
 
 if __name__ == '__main__':
-    disassembler = Shredder()
-    item = AssemblyFactory().create_item('cardboard box', Dimensions(5, 10, 7))
-    logging.warn(f'created: {item}')
-    items = disassembler.disassemble(item)
+    _init_logger(logging.INFO)
+    disassembler = Shredder(input_area=Area(ONE_METER, ONE_METER),
+                            output_dimensions=Dimensions(ONE_CENTIMETER, ONE_CENTIMETER, ONE_CENTIMETER))
+    box = ObjectFactory().create('cardboard box',
+                                 ONE_CUBIC_METER,
+                                 [Composition(Cardboard, 90.0), Composition(Glue, 10.0)])
+    logging.warn(f'created: {box}')
+    items = disassembler.disassemble(box)
     print(items)
     # unittest.main()
 
