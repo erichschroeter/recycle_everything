@@ -13,7 +13,7 @@ class Sorter(ABC):
     A Sorter identifies Objects and sorts them by material.
     """
     @abstractmethod
-    def identify(self, object: Object):
+    def identify(self, objects: list[Object]):
         pass
 
 
