@@ -42,6 +42,9 @@ class Dimensions:
     def volume(self) -> int:
         return self.width_mm * self.length_mm * self.height_mm
 
+    def __lt__(self, other):
+        return self.volume() < other.volume()
+
 
 ONE_CUBIC_CENTIMETER = Dimensions(ONE_CENTIMETER, ONE_CENTIMETER, ONE_CENTIMETER)
 ONE_CUBIC_METER = Dimensions(ONE_METER, ONE_METER, ONE_METER)

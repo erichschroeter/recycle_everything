@@ -11,12 +11,12 @@ from recycle_everything.materials import Cardboard, Composition, Glue
 class TestShredder(unittest.TestCase):
 
     def setUp(self):
-        self.item_factory = ObjectFactory()
+        self.item_factory = ObjectFactory(materials=[Composition(Cardboard, 90.0), Composition(Glue, 10.0)], dimensions=ONE_CUBIC_METER)
 
     def test_disassemble_90_10_cardboard_box(self):
         disassembler = Shredder(input_area=Area(ONE_METER, ONE_METER),
                                 output_dimensions=Dimensions(ONE_CENTIMETER, ONE_CENTIMETER, ONE_CENTIMETER))
-        box = self.item_factory.create('cardboard box', ONE_CUBIC_METER, [Composition(Cardboard, 90.0), Composition(Glue, 10.0)])
+        box = self.item_factory.create('cardboard box')
         output = sorted(disassembler.disassemble(box), key=lambda x: x.material.__qualname__)  # sort alphabetically
         self.assertEqual(output[0].quantity, 900)  # 900 pieces of Cardboard
         self.assertEqual(output[1].quantity, 100)  # 100 pieces of Glue (tape)
@@ -26,9 +26,7 @@ if __name__ == '__main__':
     _init_logger(logging.INFO)
     disassembler = Shredder(input_area=Area(ONE_METER, ONE_METER),
                             output_dimensions=Dimensions(ONE_CENTIMETER, ONE_CENTIMETER, ONE_CENTIMETER))
-    box = ObjectFactory().create('cardboard box',
-                                 ONE_CUBIC_METER,
-                                 [Composition(Cardboard, 90.0), Composition(Glue, 10.0)])
+    box = ObjectFactory(ONE_CUBIC_METER, [Composition(Cardboard, 90.0), Composition(Glue, 10.0)]).create('cardboard box')
     logging.warn(f'created: {box}')
     items = disassembler.disassemble(box)
     print(items)

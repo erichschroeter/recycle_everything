@@ -14,7 +14,11 @@ def camel_case_to_lowercase_readable(name):
 
 
 class ObjectFactory:
-    def create(self, object_name: str, dimension: Dimensions, composition: list[Composition]):
+    def __init__(self, materials: list[Composition], dimensions: Dimensions = Dimensions(1, 1, 1)) -> None:
+        self.materials = materials
+        self.default_dimensions = dimensions
+
+    def create(self, object_name: str, dimensions: Dimensions = None):
         """
         Attempts to find the class closest to the given object_name within this module and returns an instance of it.
         """
@@ -22,7 +26,7 @@ class ObjectFactory:
         # Attempt to search through defined Object derivatives and convert class name from CamelCase to lowercase with spaces
         for class_name, obj in inspect.getmembers(sys.modules[__name__]):
             if camel_case_to_lowercase_readable(class_name) == object_name and issubclass(obj, Object):
-                return obj(dimensions=dimension, composition=composition)
+                return obj(dimensions=dimensions if dimensions else self.default_dimensions, composition=self.materials)
         raise NotImplementedError(f'Object not supported: {object_name}')
 
 
@@ -32,6 +36,11 @@ class Object(ABC):
         self.name = name
         self.dimensions = dimensions
         self.composition = composition
+
+
+class Particle(Object):
+    def __init__(self, name: str, material: Material, dimensions: Dimensions = Dimensions(1, 1, 1)) -> None:
+        super().__init__(name, dimensions, [Composition(material, 100)])
 
 
 class CardboardBox(Object):
