@@ -4,13 +4,42 @@ from recycle_everything import Dimensions
 from recycle_everything.materials import Cardboard, Composition, Glue
 from recycle_everything.objects import ObjectFactory
 
-from recycle_everything.sorting import ABVolumeSorter
+from recycle_everything.sorting import ABVolumeSorter, MaterialSorter
 from recycle_everything.transportation import Conveyor
+
+
+class TestMaterialSorter(unittest.TestCase):
+    def setUp(self) -> None:
+        self.objects = ObjectFactory(materials=[Composition(Cardboard, 90), Composition(Glue, 10)], dimensions=Dimensions(10, 10, 10))
+
+    def test_sort_cardboard(self):
+        box = self.objects.create('cardboard')
+        conveyor_cardboard = Conveyor()
+        conveyor_glue = Conveyor()
+        conveyor_other = Conveyor()
+        sorter = MaterialSorter(materials_map={Cardboard: conveyor_cardboard, Glue: conveyor_glue}, reject_conveyor=conveyor_other)
+        self.assertEqual(conveyor_cardboard, sorter.sort(box))
+
+    # def test_sort_glue(self):
+    #     box = self.objects.create('cardboard box')
+    #     conveyor_cardboard = Conveyor()
+    #     conveyor_glue = Conveyor()
+    #     conveyor_other = Conveyor()
+    #     sorter = MaterialSorter(materials_map={Cardboard: conveyor_cardboard, Glue: conveyor_glue}, reject_conveyor=conveyor_other)
+    #     self.assertEqual(conveyor_cardboard, sorter.sort(box))
+
+    # def test_sort_box(self):
+    #     box = self.objects.create('cardboard box')
+    #     conveyor_cardboard = Conveyor()
+    #     conveyor_glue = Conveyor()
+    #     conveyor_other = Conveyor()
+    #     sorter = MaterialSorter(materials_map={Cardboard: conveyor_cardboard, Glue: conveyor_glue}, reject_conveyor=conveyor_other)
+    #     self.assertEqual(conveyor_cardboard, sorter.sort(box))
 
 
 class TestVolumeSorter(unittest.TestCase):
     def setUp(self) -> None:
-        self.objects = ObjectFactory(Dimensions(10, 10, 10), [Composition(Cardboard, 90), Composition(Glue, 10)])
+        self.objects = ObjectFactory(materials=[Composition(Cardboard, 90), Composition(Glue, 10)], dimensions=Dimensions(10, 10, 10))
 
     def test_sort_greater_than_threshold(self):
         box = self.objects.create('cardboard box', dimensions=Dimensions(11, 11, 11))

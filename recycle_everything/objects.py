@@ -27,6 +27,9 @@ class ObjectFactory:
         for class_name, obj in inspect.getmembers(sys.modules[__name__]):
             if camel_case_to_lowercase_readable(class_name) == object_name and issubclass(obj, Object):
                 return obj(dimensions=dimensions if dimensions else self.default_dimensions, composition=self.materials)
+        for class_name, material in inspect.getmembers(sys.modules[__name__]):
+            if camel_case_to_lowercase_readable(class_name) == object_name and issubclass(material, Material):
+                return Particle(material=self.materials, dimensions=dimensions if dimensions else self.default_dimensions)
         raise NotImplementedError(f'Object not supported: {object_name}')
 
 
@@ -39,8 +42,8 @@ class Object(ABC):
 
 
 class Particle(Object):
-    def __init__(self, name: str, material: Material, dimensions: Dimensions = Dimensions(1, 1, 1)) -> None:
-        super().__init__(name, dimensions, [Composition(material, 100)])
+    def __init__(self, material: Material, dimensions: Dimensions = Dimensions(1, 1, 1)) -> None:
+        super().__init__(str(material), dimensions, [Composition(material, 100)])
 
 
 class CardboardBox(Object):
