@@ -5,6 +5,7 @@ import re
 import sys
 
 from recycle_everything import Dimensions
+import recycle_everything
 from recycle_everything.materials import Cardboard, Composition, Glue, Material
 
 CAMEL_CASE_PATTERN = re.compile(r'(?<!^)(?=[A-Z])')
@@ -27,7 +28,7 @@ class ObjectFactory:
         for class_name, obj in inspect.getmembers(sys.modules[__name__]):
             if camel_case_to_lowercase_readable(class_name) == object_name and issubclass(obj, Object):
                 return obj(dimensions=dimensions if dimensions else self.default_dimensions, composition=self.materials)
-        for class_name, material in inspect.getmembers(sys.modules[__name__]):
+        for class_name, material in inspect.getmembers(sys.modules['recycle_everything.materials']):
             if camel_case_to_lowercase_readable(class_name) == object_name and issubclass(material, Material):
                 return Particle(material=self.materials, dimensions=dimensions if dimensions else self.default_dimensions)
         raise NotImplementedError(f'Object not supported: {object_name}')
@@ -59,5 +60,5 @@ class CircuitBoard(Object):
     pass
 
 if __name__ == '__main__':
-    factory = ObjectFactory()
-    print(factory.create('cardboard box'))
+    factory = ObjectFactory(materials=[Cardboard])
+    print(factory.create('cardboard'))

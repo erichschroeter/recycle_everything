@@ -2,51 +2,45 @@
 from abc import ABC
 from dataclasses import dataclass
 
+from recycle_everything import BaseRecycleEverythingError
+
 
 class Material(ABC):
-    def __init__(self, name: str) -> None:
-        super().__init__()
-        self.name = name
+    pass
 
+
+class CompositionError(BaseRecycleEverythingError):
+    pass
 
 @dataclass
 class Composition:
-   material: Material
+   material: type[Material]
    percentage: float
 
 
 class Cardboard(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('cardboard')
+    pass
 
 class Glass(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('glass')
+    pass
 
 class Glue(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('glue')
+    pass
 
 class Metal(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('metal')
+    pass
 
 class OrganicMaterial(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('organic material')
+    pass
 
 class Paper(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('paper')
+    pass
 
 class Plastic(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('plastic')
+    pass
 
 class Rubber(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('rubber')
+    pass
 
 class Wood(Material):
-    def __init__(self, name: str) -> None:
-        super().__init__('wood')
+    pass

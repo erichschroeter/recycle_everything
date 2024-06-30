@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 from typing import Dict
 
 from recycle_everything import Dimensions
-from recycle_everything.materials import Material
-from recycle_everything.objects import Object
+from recycle_everything.materials import Cardboard, Composition, Glue, Material
+from recycle_everything.objects import Object, ObjectFactory
 from recycle_everything.transportation import Conveyor
 
 
@@ -46,7 +46,7 @@ class ABVolumeSorter(Sorter):
 
 
 class MaterialSorter(Sorter):
-    def __init__(self, materials_map: Dict[Material, Conveyor], reject_conveyor: Conveyor, url: str = None) -> None:
+    def __init__(self, materials_map: Dict[type[Material], Conveyor], reject_conveyor: Conveyor, url: str = None) -> None:
         """
         Sorts based on material. If the material is singular and within the specified materials_map,
         then the sorter will direct to the respective conveyor, else the reject conveyor.
@@ -57,6 +57,19 @@ class MaterialSorter(Sorter):
 
     def sort(self, object: Object) -> Conveyor:
         if len(object.composition) == 1:
-            if object.composition[0].material in self.materials_map:
-                return self.materials_map[object.composition[0].material]
+            print(f'MATERIAL: {object.composition[0].material}')
+            material = object.composition[0].material
+            print(f'Checking for {material} IN {self.materials_map}')
+            if material in self.materials_map:
+                print(f'MaterialSorter: {self.materials_map[material]}')
+                return self.materials_map[material]
+        print(f'reject MaterialSorter: {self.reject_conveyor}')
         return self.reject_conveyor
+
+if __name__ == '__main__':
+    factory = ObjectFactory(materials=[Cardboard])
+    p = factory.create('cardboard')
+    conveyor_cardboard = Conveyor(label='cardboard conveyor')
+    conveyor_glue = Conveyor(label='glue conveyor')
+    sorter = MaterialSorter(materials_map={Cardboard: conveyor_cardboard, Glue: conveyor_glue}, reject_conveyor=Conveyor(label='reject conveyor'))
+    print(sorter.sort(p))

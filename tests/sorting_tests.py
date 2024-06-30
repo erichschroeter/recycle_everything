@@ -14,9 +14,9 @@ class TestMaterialSorter(unittest.TestCase):
 
     def test_sort_cardboard(self):
         box = self.objects.create('cardboard')
-        conveyor_cardboard = Conveyor()
-        conveyor_glue = Conveyor()
-        conveyor_other = Conveyor()
+        conveyor_cardboard = Conveyor(label='cardboard conveyor')
+        conveyor_glue = Conveyor(label='glue conveyor')
+        conveyor_other = Conveyor(label='other conveyor')
         sorter = MaterialSorter(materials_map={Cardboard: conveyor_cardboard, Glue: conveyor_glue}, reject_conveyor=conveyor_other)
         self.assertEqual(conveyor_cardboard, sorter.sort(box))
 
